@@ -38,7 +38,7 @@ public class BlockyStorage {
 				connection.prepareStatement(
 						"CREATE TABLE IF NOT EXISTS PlayerBlocks (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, player TEXT, UNIQUE(x, y, z))")
 						.executeUpdate();
-			} catch (SQLException | IOException e) {
+			} catch (SQLException | IOException | ClassNotFoundException e) {
 				BlockyLog.print(e);
 			}
 		});

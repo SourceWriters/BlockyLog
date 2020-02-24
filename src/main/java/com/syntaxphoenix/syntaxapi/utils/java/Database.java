@@ -8,10 +8,11 @@ import java.sql.SQLException;
 
 public class Database {
 
-	public static Connection connectSQLite(File file) throws SQLException, IOException {
+	public static Connection connectSQLite(File file) throws SQLException, IOException, ClassNotFoundException {
 		if (!file.exists()) {
 			file.createNewFile();
 		}
+		Class.forName("org.sqlite.JDBC");
 		return DriverManager.getConnection("jdbc:sqlite:" + file.getPath());
 	}
 
