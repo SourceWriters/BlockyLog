@@ -25,7 +25,7 @@ import com.syntaxphoenix.syntaxapi.utils.java.Database;
 public class BlockyStorage {
 
 	private final CacheList<BlockyData> cache;
-	private final ExecutorService service = Executors.newFixedThreadPool(3);
+	private final ExecutorService service = Executors.newCachedThreadPool();
 	private final File file;
 	private Connection connection;
 
@@ -75,7 +75,7 @@ public class BlockyStorage {
 					statement.setInt(2, data.getY());
 					statement.setInt(3, data.getZ());
 					statement.setString(4, data.getPlayerId().toString());
-
+					
 					statement.addBatch();
 					current++;
 

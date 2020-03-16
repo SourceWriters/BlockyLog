@@ -34,7 +34,7 @@ public final class BlockyApi {
 	}
 	
 	public boolean isPlayerPlaced(Location location) throws InterruptedException, ExecutionException, TimeoutException {
-		Optional<BlockyData> data = getStorage(location.getWorld()).getData(location.getBlockX(), location.getBlockY(), location.getBlockZ()).get(500, TimeUnit.MILLISECONDS);
+		Optional<BlockyData> data = getStorage(location.getWorld()).getData(location.getBlockX(), location.getBlockY(), location.getBlockZ()).get(1, TimeUnit.SECONDS);
 		return data.isPresent() ? data.get().getPlayerId() != null : false;
 	}
 	
