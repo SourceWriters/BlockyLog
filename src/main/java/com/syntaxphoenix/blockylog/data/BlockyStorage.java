@@ -55,6 +55,12 @@ public class BlockyStorage {
 			}
 			PreparedStatement statement = null;
 			try {
+				if (connection.isClosed() || connection.isReadOnly())
+					connection = Database.connectSQLite(file);
+			} catch (SQLException | ClassNotFoundException | IOException e) {
+				BlockyLog.print(e);
+			}
+			try {
 				statement = connection.prepareStatement("REPLACE INTO PlayerBlocks VALUES (?, ?, ?, ?)");
 			} catch (SQLException e) {
 				BlockyLog.print(e);
@@ -62,7 +68,7 @@ public class BlockyStorage {
 			if (statement == null) {
 				return;
 			}
-
+			
 			ArrayList<BlockyData> removeCompletly = new ArrayList<>();
 			int current = 0;
 			for (BlockyData data : delete) {
@@ -75,13 +81,14 @@ public class BlockyStorage {
 					statement.setInt(2, data.getY());
 					statement.setInt(3, data.getZ());
 					statement.setString(4, data.getPlayerId().toString());
-					
+
 					statement.addBatch();
 					current++;
 
-					if (current % 1000 == 0 || current == delete.size()) {
+					if (current % 200 == 0 || current == delete.size()) {
 						statement.executeBatch();
 					}
+					Thread.yield();
 				} catch (SQLException e) {
 					BlockyLog.print(e);
 				}
@@ -91,6 +98,12 @@ public class BlockyStorage {
 				return;
 			}
 			statement = null;
+			try {
+				if (connection.isClosed() || connection.isReadOnly())
+					connection = Database.connectSQLite(file);
+			} catch (SQLException | ClassNotFoundException | IOException e) {
+				BlockyLog.print(e);
+			}
 			try {
 				statement = connection.prepareStatement("DELETE FROM PlayerBlocks WHERE x = ? AND y = ? AND z = ?");
 			} catch (SQLException e) {
@@ -109,14 +122,19 @@ public class BlockyStorage {
 					statement.addBatch();
 					current++;
 
-					if (current % 1000 == 0 || current == removeCompletly.size()) {
+					if (current % 200 == 0 || current == removeCompletly.size()) {
 						statement.executeBatch();
 					}
+					Thread.yield();
 				} catch (SQLException e) {
 					BlockyLog.print(e);
 				}
 			}
 		};
+	}
+
+	public Future<?> save() {
+		return Executors.newSingleThreadExecutor().submit(() -> cache.clear());
 	}
 
 	public Future<?> saveCache() {
@@ -135,7 +153,9 @@ public class BlockyStorage {
 			if (cached.equalsExact(data))
 				return;
 			cache.remove(cached);
+			System.out.println("Removed data");
 		}
+		System.out.println(data == null ? "Empty" : data.toString());
 		cache.add(data);
 	}
 
@@ -153,7 +173,15 @@ public class BlockyStorage {
 
 	public Future<Optional<BlockyData>> getDataFromFile(int x, int y, int z) {
 		return service.submit(() -> {
+			if(connection == null)
+				return Optional.ofNullable(null);
 			BlockyData output = null;
+			try {
+				if (connection.isClosed() || connection.isReadOnly())
+					connection = Database.connectSQLite(file);
+			} catch (SQLException | ClassNotFoundException | IOException e) {
+				BlockyLog.print(e);
+			}
 			try {
 				PreparedStatement prepare = connection
 						.prepareStatement("SELECT * FROM PlayerBlocks WHERE x = ? AND y = ? AND z = ?");

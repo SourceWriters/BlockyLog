@@ -1,10 +1,11 @@
 package com.syntaxphoenix.blockylog;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Future;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -42,13 +43,33 @@ public class BlockyLog extends JavaPlugin {
 	public void onDisable() {
 		
 		if(!storages.isEmpty()) {
+			ArrayList<Future<?>> queue = new ArrayList<>();
+			Instant started = Instant.now();
 			for(BlockyStorage storage : storages.values()) {
-				try {
-					storage.saveCache().get(2, TimeUnit.MINUTES);
-				} catch (InterruptedException | ExecutionException | TimeoutException e) {
-					BlockyLog.print(e);
+				queue.add(storage.save());
+			}
+			int index = 0;
+			int total = queue.size();
+			for(Future<?> future : queue) {
+				index++;
+				print("&3Waiting for storage to save... (" + index + " / " + total + ")");
+				int current = 0;
+				while(!future.isDone()) {
+					current++;
+					if(current >= 50) {
+						print("&3Waiting for storage to save... (" + index + " / " + total + ")");
+						current = 0;
+					}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+			queue.clear();
+			long seconds = Duration.between(started, Instant.now()).getSeconds();
+			print("&bSuccessfully saved storage in " + seconds + " second" + (seconds == 1 ? "" : "s") + ", bye!");
 		}
 		
 	}

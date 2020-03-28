@@ -6,10 +6,7 @@ public class IntegerTools {
 
 	public static int stringSize(int var0) {
 		int var1;
-		for (var1 = 0; var0 > sizeTable[var1]; ++var1) {
-			;
-		}
-
+		for (var1 = 0; var0 > sizeTable[var1]; ++var1);
 		return var1 + 1;
 	}
 	

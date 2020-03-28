@@ -101,6 +101,33 @@ public class CacheList<V> {
 	public boolean doesAutomaticCleanup() {
 		return timer != null;
 	}
+	
+	public void clear() {
+		ArrayList<V> delete = null;
+		
+		synchronized (cacheList) {
+			Iterator<CachedObject<V>> iterator = cacheList.iterator();
+			delete = new ArrayList<>(cacheList.size());
+			
+			while(iterator.hasNext()) {
+				CachedObject<V> object = iterator.next();
+				if(object != null) {
+					delete.add(object.getValue(false));
+				}
+			}
+		}
+		
+		if(action != null) {
+			action.accept(delete);
+		}
+		
+		for (V value : delete) {
+			synchronized(cacheList) {
+				cacheList.remove(value);
+			}
+			Thread.yield();
+		}
+	}
 
 	public void cleanup() {
 		long now = System.currentTimeMillis();
