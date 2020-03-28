@@ -153,9 +153,7 @@ public class BlockyStorage {
 			if (cached.equalsExact(data))
 				return;
 			cache.remove(cached);
-			System.out.println("Removed data");
 		}
-		System.out.println(data == null ? "Empty" : data.toString());
 		cache.add(data);
 	}
 
