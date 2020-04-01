@@ -49,6 +49,7 @@ public class BlockyStorage {
 			} catch (SQLException | IOException | ClassNotFoundException e) {
 				BlockyLog.print(e);
 			}
+			Thread.yield();
 		});
 		try {
 			future.get(1, TimeUnit.MINUTES);
@@ -69,7 +70,6 @@ public class BlockyStorage {
 
 	private Future<?> save(BlockyData data) {
 		return database.submit(() -> {
-			BlockyLog.print(data.toString());
 			try {
 				PreparedStatement statement;
 				if (data.getPlayerId() == null) {
@@ -82,7 +82,8 @@ public class BlockyStorage {
 				statement.setInt(1, data.getX());
 				statement.setInt(2, data.getY());
 				statement.setInt(3, data.getZ());
-				BlockyLog.print("Status: " + statement.executeUpdate());
+				statement.executeUpdate();
+				Thread.yield();
 			} catch (SQLException e) {
 				BlockyLog.print(e);
 			}
@@ -115,6 +116,7 @@ public class BlockyStorage {
 			} catch (SQLException e) {
 				BlockyLog.print(e);
 			}
+			Thread.yield();
 		});
 	}
 
@@ -175,6 +177,7 @@ public class BlockyStorage {
 			}
 			if (output != null)
 				setData(output, false);
+			Thread.yield();
 		});
 	}
 
