@@ -46,7 +46,7 @@ public class BlockyLog extends JavaPlugin {
 			ArrayList<Future<?>> queue = new ArrayList<>();
 			Instant started = Instant.now();
 			for(BlockyStorage storage : storages.values()) {
-				queue.add(storage.save());
+				queue.add(storage.close());
 			}
 			int index = 0;
 			int total = queue.size();
@@ -63,8 +63,9 @@ public class BlockyLog extends JavaPlugin {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						BlockyLog.print(e);
 					}
+					Thread.yield();
 				}
 			}
 			queue.clear();

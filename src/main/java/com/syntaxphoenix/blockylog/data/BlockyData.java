@@ -1,4 +1,4 @@
-package com.syntaxphoenix.blockylog.storage;
+package com.syntaxphoenix.blockylog.data;
 
 import java.util.UUID;
 
