@@ -5,7 +5,7 @@
 
 	<groupId>com.syntaxphoenix.spigot</groupId>
 	<artifactId>BlockyLog</artifactId>
-	<version>2.3.1</version>
+	<version>3.0.0</version>
 	<name>BlockyLog</name>
 	<packaging>jar</packaging>
 
@@ -81,6 +81,11 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
+
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/SourceWriters/vCompat</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -90,6 +95,11 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.13.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourcewriters.minecraft</groupId>
+			<artifactId>vcompat</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 </project>
