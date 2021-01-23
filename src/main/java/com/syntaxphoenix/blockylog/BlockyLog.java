@@ -1,28 +1,56 @@
 package com.syntaxphoenix.blockylog;
 
+import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.syntaxphoenix.blockylog.data.BlockyStorage;
+import com.syntaxphoenix.blockylog.data.NumericSpace;
+
 import net.md_5.bungee.api.ChatColor;
+import net.sourcewriters.minecraft.versiontools.reflection.VersionControl;
+import net.sourcewriters.minecraft.versiontools.reflection.data.persistence.DataDistributor;
+import net.sourcewriters.minecraft.versiontools.shaded.syntaxapi.random.Keys;
 import net.sourcewriters.minecraft.versiontools.shaded.syntaxapi.utils.java.Exceptions;
+import net.sourcewriters.minecraft.versiontools.shaded.syntaxapi.utils.key.Namespace;
 
 public class BlockyLog extends JavaPlugin {
 
     public static final CommandSender CONSOLE = Bukkit.getConsoleSender();
+    public static final NumericSpace NAMESPACE = new NumericSpace(Namespace.of("blockylog"));
+
+    private DataDistributor<String> distributor;
+    private final ConcurrentHashMap<String, BlockyStorage> storages = new ConcurrentHashMap<>(); // Normally not needed but better for quick
+                                                                                                 // access
 
     /*
      * 
      */
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
+        distributor = VersionControl.get().getDataProvider().createDistributor(new File(""), string -> string, () -> Keys.generateKey(9));
+    }
 
+    @Override
+    public void onEnable() {
+        if (!storages.isEmpty()) {
+            return; // Already initialized
+        }
+        for (World world : Bukkit.getWorlds()) {
+            storages.put(world.getName(), new BlockyStorage(distributor.get(world.getName())));
+        }
     }
 
     @Override
     public void onDisable() {
-
+        distributor.shutdown(); // Shutdown and afterwards
+        distributor.delete(); // delete all cached data
+        storages.clear();
     }
 
     /*

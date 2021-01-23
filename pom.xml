@@ -33,8 +33,12 @@
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<relocations>
 						<relocation>
-							<pattern>com.syntaxphoenix.syntaxapi</pattern>
-							<shadedPattern>com.syntaxphoenix.spigot.blockylog.shaded.syntaxapi</shadedPattern>
+							<pattern>net.sourcewriters.minecraft.versiontools</pattern>
+							<shadedPattern>com.syntaxphoenix.spigot.blockylog.shaded.vcompat</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>com.google.gson</pattern>
+							<shadedPattern>com.syntaxphoenix.spigot.blockylog.shaded.gson</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
