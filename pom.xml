@@ -5,7 +5,7 @@
 
 	<groupId>com.syntaxphoenix.spigot</groupId>
 	<artifactId>BlockyLog</artifactId>
-	<version>2.3.0</version>
+	<version>2.3.1</version>
 	<name>BlockyLog</name>
 	<packaging>jar</packaging>
 
@@ -60,7 +60,7 @@
 							<target>
 								<copy
 									file="${project.build.directory}/${project.build.finalName}.jar"
-									tofile="${basedir}/../../../TestServers/1.14.2/plugins/${project.artifactId}.jar" />
+									tofile="${basedir}/../../../TestServers/1.16.4/plugins/${project.artifactId}.jar" />
 							</target>
 						</configuration>
 					</execution>

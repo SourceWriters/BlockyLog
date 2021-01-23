@@ -1,4 +1,5 @@
 main: com.syntaxphoenix.blockylog.BlockyLog
 name: BlockyLog
-version: 2.3.0
+version: ${projectVersion}
 author: SyntaxPhoenix IT-Solutions
+api-version: 1.13
